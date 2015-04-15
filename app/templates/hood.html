@@ -1,0 +1,80 @@
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4>The game of taxi pickups and dropoffs is played on a spacetime board of NYC.  
+The probability of pickups, moves, and rewards is determined by the historical taxi data.</h4>
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_html rendered_html output_subarea output_pyout">
+<img src="static/figures/spacetime-web.jpg" width="100%"/>
+</div>
+</div>
+</div>
+</div>
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4><br><br>The game can be abstracted as a <a href="http://en.wikipedia.org/wiki/Markov_decision_process"><u>Markov Decision Process</u></a>.  Taking a page from computer-chess programs, we can use look-ahead trees to determine optimal next moves.</h4>
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_html rendered_html output_subarea output_pyout">
+<img src="static/figures/mdp-diagram-web.jpg" width="100%"/>
+</div>
+</div>
+</div>
+</div>
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4><br><br>We can use machine learning to analyze the historical data<br>and identify hotspots for picking up profitable fares.<br>
+</h4>
+</div>
+</div>
+</div>
+
+<div class="gfyitem" data-title=true data-autoplay=True data-controls=true data-expand=True data-id="AdmirableSingleDaddylonglegs" style="width: 100%;" ></div>
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4><br>L1-Norm regularization can be used to perform feature extraction, effectively highlighting only the hotspots that most strongly determine driver performance.<br>
+</h4>
+</div>
+</div>
+</div>
+
+<div class="gfyitem" data-title=true data-autoplay=True data-controls=true data-expand=True data-id="LateSorrowfulHart" style="width: 100%;" ></div>
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4>
+<br>
+<span style="color: red">Red</span> spots indicate locations and times<br>frequented by <span style="color: red">highly performing</span> drivers.<br>
+<span style="color: blue">Blue</span> spots indicate locations and times<br>frequented by <span style="color: blue">poorly performing</span> drivers.<br>
+</h4>
+</div>
+</div>
+</div>
