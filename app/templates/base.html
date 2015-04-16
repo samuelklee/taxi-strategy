@@ -57,6 +57,9 @@
                         <a href="#page-top"></a>
                     </li>
                     <li>
+                        <a class="page-scroll" href="#engine">Predictive Engine</a>
+                    </li>
+                    <li>
                         <a class="page-scroll" href="#hotspots">Fare Hotspots</a>
                     </li>
                     <li>
@@ -84,7 +87,7 @@
                         <h1 class="brand-heading">DEEP YELLOW</h1>
                         <h2>IT'S LIKE DEEP BLUE FOR TAXIS</h2>
                         <h5>Are you a cab driver hunting for the best fares in NYC?<br><br>Let our predictive engine<br>(based on NYC taxi data)<br>be your guide.</h5>
-                        <a href="#hotspots" class="btn btn-circle page-scroll">
+                        <a href="#engine" class="btn btn-circle page-scroll">
                             <i class="fa fa-angle-double-down animated"></i>
                         </a>
                     </div>
@@ -92,6 +95,21 @@
             </div>
         </div>
     </header>
+    
+    <!-- Engine Section -->
+    <section class="content-section text-center">
+        <div id="engine" class="main-section">
+            <div class="container">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <h2>Predictive engine (still in the shop)</h2>
+                {% block engine %}{% endblock %}
+                <a href="#hotspots" class="btn btn-circle page-scroll">
+                  <i class="fa fa-angle-double-down animated"></i>
+                </a>
+            </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Hotspots Section -->
     <section class="content-section text-center">
@@ -100,11 +118,14 @@
                 <div class="col-lg-8 col-lg-offset-2">
                     <h2>Fare Hotspots</h2>
                 {% block hotspots %}{% endblock %}
+                <a href="#hood" class="btn btn-circle page-scroll">
+                  <i class="fa fa-angle-double-down animated"></i>
+                </a>
             </div>
             </div>
         </div>
     </section>
-
+    
     <!-- Hood Section -->
     <section class="content-section text-center">
         <div id="hood" class="topic-section">
@@ -112,6 +133,9 @@
                 <div class="col-lg-8 col-lg-offset-2">
                     <h2>Under the Hood</h2>
                     {% block hood %}{% endblock %}
+                    <a href="#tales" class="btn btn-circle page-scroll">
+                      <i class="fa fa-angle-double-down animated"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -124,7 +148,11 @@
                 <div class="col-lg-8 col-lg-offset-2">
                     <h2>Taxi Tales</h2>
                     {% block tales %}{% endblock %}
+                    <a href="#contact" class="btn btn-circle page-scroll">
+                      <i class="fa fa-angle-double-down animated"></i>
+                    </a>
                 </div>
+                
             </div>
         </div>
     </section>
@@ -134,7 +162,7 @@
         <div id="contact" class="contact-section">
             <div class="container">
                 <div class="col-lg-8 col-lg-offset-2">
-                    <h2>About</h2>
+                    <h2>Go deeper</h2>
                     <ul class="list-inline banner-social-buttons">
                         <li>
                             <a href="http://nyctaxistrategy.blogspot.com/" class="btn btn-default btn-lg"><i class="fa fa-newspaper-o fa-fw"></i> <span class="network-name">Blog</span></a>
@@ -151,12 +179,16 @@
     <!-- Footer -->
     <footer>
         <div class="container text-center">
-            <h5>&copy; Samuel Lee 2015</h5>
+            <h5>&copy; S. Lee 2015</h5>
         </div>
     </footer>
 
     <!-- jQuery -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="static/grayscale/js/jquery.js"></script>
+    <script type=text/javascript>
+      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="static/grayscale/js/bootstrap.min.js"></script>
@@ -168,7 +200,7 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="static/grayscale/js/grayscale.js"></script>
-<!--    <script type='text/javascript' src="static/engine.js"></script>-->
+    <script type='text/javascript' src="static/engine.js"></script>
     <script type='text/javascript' src="static/hotspots.js"></script>
     <script type="text/javascript" src="static/gfycat_test.js"></script>
 

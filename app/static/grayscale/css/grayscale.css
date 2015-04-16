@@ -360,6 +360,27 @@ a:focus {
     background-color: #f7b731;
 }
 
+.status {
+    border-radius: 0;
+    width: 25%;
+    text-transform: uppercase;
+/*    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;*/
+    font-family: Courier;
+    font-weight: 600;
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+    margin: 2px;
+}
+
+.status-default {
+    width: 25%;
+/*    border: 1px solid #f7b731;*/
+    color: #f7b731;
+    background-color: transparent;
+    margin: 2px;
+}
+
 ul.banner-social-buttons {
     margin-top: 0;
 }
