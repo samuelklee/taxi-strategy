@@ -5,22 +5,22 @@ from itertools import product
 import memoize
 
 #load dataframes
-print 'Loading shit...'
+print 'Loading...'
 reward_pd           = pd.read_pickle('app/static/data/mdp_files/reward_pd.pkl')
-print 'reward_pd loaded'
+print 'reward_pd loaded!'
 dist_pd             = pd.read_pickle('app/static/data/mdp_files/dist_pd.pkl')
-print 'dist_pd loaded'
+print 'dist_pd loaded!'
 euclid_dist_pd      = pd.read_pickle('app/static/data/mdp_files/euclid_dist_pd.pkl')
-print 'euclid_dist_pd loaded'
+print 'euclid_dist_pd loaded!'
 dropoff_pd          = pd.read_pickle('app/static/data/mdp_files/dropoff_pd.pkl')
-print 'dropoff_pd loaded'
+print 'dropoff_pd loaded!'
 prob_pickup_pd      = pd.read_pickle('app/static/data/mdp_files/prob_pickup_pd.pkl')
-print 'prob_pickup_pd loaded'
+print 'prob_pickup_pd loaded!'
 zonetimes_pd        = pd.read_pickle('app/static/data/mdp_files/zonetimes_pd.pkl')
 zone_times_shift_pd = pd.read_pickle('app/static/data/mdp_files/zone_times_shift_pd.pkl')
 zone_matrix         = np.load('app/static/data/mdp_files/zone_matrix_40x40.dat')
-print 'zone stuff loaded'
-print 'Shit loaded!'
+print 'zone files loaded!'
+print 'Loaded!'
 
 #make dictionaries and other things from dataframes
 reward_dict         = reward_pd.to_dict()
@@ -278,12 +278,3 @@ def lat_lng_to_zone(latlng):
     
     zone = zone_lat_bin * num_lng_bins + zone_lng_bin + 1
     return zone
-
-#z, tb = zonetime_to_zone_time_bin(10914)
-#print z
-#print zonetimes_to_zone_dict[10914]
-#latlng = zone_to_lat_lng(z)
-#print latlng
-#print lat_lng_to_zone(latlng)
-#get_prediction(10914)
-#simulate_shift(10914, depth=2, optimal=1, print_status=True)
