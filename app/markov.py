@@ -1,21 +1,38 @@
 import numpy as np
 import pandas as pd
 from itertools import product
-import views as gv
 
 import memoize
 
+#load dataframes
+print 'Loading shit...'
+reward_pd           = pd.read_pickle('app/static/data/mdp_files/reward_pd.pkl')
+print 'reward_pd loaded'
+dist_pd             = pd.read_pickle('app/static/data/mdp_files/dist_pd.pkl')
+print 'dist_pd loaded'
+euclid_dist_pd      = pd.read_pickle('app/static/data/mdp_files/euclid_dist_pd.pkl')
+print 'euclid_dist_pd loaded'
+dropoff_pd          = pd.read_pickle('app/static/data/mdp_files/dropoff_pd.pkl')
+print 'dropoff_pd loaded'
+prob_pickup_pd      = pd.read_pickle('app/static/data/mdp_files/prob_pickup_pd.pkl')
+print 'prob_pickup_pd loaded'
+zonetimes_pd        = pd.read_pickle('app/static/data/mdp_files/zonetimes_pd.pkl')
+zone_times_shift_pd = pd.read_pickle('app/static/data/mdp_files/zone_times_shift_pd.pkl')
+zone_matrix         = np.load('app/static/data/mdp_files/zone_matrix_40x40.dat')
+print 'zone stuff loaded'
+print 'Shit loaded!'
+
 #make dictionaries and other things from dataframes
-reward_dict         = gv.reward_pd.to_dict()
-dist_dict           = gv.dist_pd.to_dict()
-euclid_dist_dict    = gv.euclid_dist_pd.to_dict()
-dropoff_dict        = gv.dropoff_pd.to_dict()
-prob_pickup_dict    = gv.prob_pickup_pd.prob_pickup.to_dict()
-zonetimes_to_zone_dict      = dict(zip(gv.zonetimes_pd.zone_time_renamed, gv.zonetimes_pd.zone))
-zonetimes_to_time_bin_dict  = dict(zip(gv.zonetimes_pd.zone_time_renamed, gv.zonetimes_pd.time_bin))
+reward_dict         = reward_pd.to_dict()
+dist_dict           = dist_pd.to_dict()
+euclid_dist_dict    = euclid_dist_pd.to_dict()
+dropoff_dict        = dropoff_pd.to_dict()
+prob_pickup_dict    = prob_pickup_pd.prob_pickup.to_dict()
+zonetimes_to_zone_dict      = dict(zip(zonetimes_pd.zone_time_renamed, zonetimes_pd.zone))
+zonetimes_to_time_bin_dict  = dict(zip(zonetimes_pd.zone_time_renamed, zonetimes_pd.time_bin))
 
 num_zones           = 251
-zone_times_shift    = gv.zone_times_shift_pd.ix[:,0].values
+zone_times_shift    = zone_times_shift_pd.ix[:,0].values
 last_zone_time      = zone_times_shift[-1]
 
 #set parameters for cabbie cone
