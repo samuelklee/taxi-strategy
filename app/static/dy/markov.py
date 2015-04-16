@@ -263,11 +263,11 @@ def lat_lng_to_zone(latlng):
     zone = zone_lat_bin * num_lng_bins + zone_lng_bin + 1
     return zone
 
-z, tb = zonetime_to_zone_time_bin(10914)
-print z
-print zonetimes_to_zone_dict[10914]
-latlng = zone_to_lat_lng(z)
-print latlng
-print lat_lng_to_zone(latlng)
+#z, tb = zonetime_to_zone_time_bin(10914)
+#print z
+#print zonetimes_to_zone_dict[10914]
+#latlng = zone_to_lat_lng(z)
+#print latlng
+#print lat_lng_to_zone(latlng)
 #get_prediction(10914)
 #simulate_shift(10914, depth=2, optimal=1, print_status=True)
