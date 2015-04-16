@@ -25,6 +25,9 @@
     <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
 
+    <script type=text/javascript>
+      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
     <script type="text/javascript" src="static/bootstrap-slider.js"></script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -101,7 +104,7 @@
         <div id="engine" class="main-section">
             <div class="container">
                 <div class="col-lg-8 col-lg-offset-2">
-                    <h2>Predictive engine (still in the shop)</h2>
+                    <h2>Predictive engine</h2>
                 {% block engine %}{% endblock %}
                 <a href="#hotspots" class="btn btn-circle page-scroll">
                   <i class="fa fa-angle-double-down animated"></i>

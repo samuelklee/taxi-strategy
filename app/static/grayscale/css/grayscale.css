@@ -370,7 +370,7 @@ a:focus {
     -webkit-transition: all .3s ease-in-out;
     -moz-transition: all .3s ease-in-out;
     transition: all .3s ease-in-out;
-    margin: 2px;
+    margin: 0px;
 }
 
 .status-default {
@@ -378,7 +378,7 @@ a:focus {
 /*    border: 1px solid #f7b731;*/
     color: #f7b731;
     background-color: transparent;
-    margin: 2px;
+    margin: 0px;
 }
 
 ul.banner-social-buttons {

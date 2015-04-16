@@ -34,6 +34,10 @@ time_bin_minutes    = 10.
 max_waiting_minutes = 2*time_bin_minutes
 shift_end_zone_time = max(zone_times_shift)
 avg_speed_mph       = 15
+shift_beg           = 7
+shift_end           = 19
+shift_beg_time_bin  = shift_beg*60/time_bin_minutes
+shift_end_time_bin  = shift_end*60/time_bin_minutes
 
 #set gas costs
 miles_per_gallon    = 15.
@@ -155,10 +159,16 @@ def get_prediction(current_zone_time, root_width=16, action_width=16, depth=2, d
         make_pickup = int(argmax_a[0])
         next_zone_time = int(argmax_a[1])
         expected_reward = argmax_a[2]
-        if make_pickup:
-            print 'Make pickup! Expected reward = {0:.2f}'.format(expected_reward)
-        else:
-            print 'Skip pickup! Go to zonetime {0}. Expected cost = {1: .2f}.'.format(next_zone_time, expected_reward)
+        causal_zone_times = get_causal_zone_times(current_zone_time)
+        
+        current_zone, current_time_bin = zonetime_to_zone_time_bin(current_zone_time)
+        next_zone, next_time_bin = zonetime_to_zone_time_bin(next_zone_time)
+        delta_time_bins = next_time_bin - current_time_bin
+#        if make_pickup:
+#            print 'Make pickup! Expected reward = {0:.2f}'.format(expected_reward)
+#        else:
+#            print 'Skip pickup! Go to zonetime {0}. Expected cost = {1: .2f}.'.format(next_zone_time, expected_reward)
+    return make_pickup, next_zone, delta_time_bins, np.around(expected_reward,2), causal_zone_times
             
 def simulate_trip(current_zone_time, policy):
     causal_zone_times = get_causal_zone_times(current_zone_time)
