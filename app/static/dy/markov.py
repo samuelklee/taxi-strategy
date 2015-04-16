@@ -7,13 +7,19 @@ import memoize
 #load dataframes
 print 'Loading shit...'
 reward_pd           = pd.read_pickle('app/static/dy/mdp_files/reward_pd.pkl')
+print 'reward_pd loaded'
 dist_pd             = pd.read_pickle('app/static/dy/mdp_files/dist_pd.pkl')
+print 'dist_pd loaded'
 euclid_dist_pd      = pd.read_pickle('app/static/dy/mdp_files/euclid_dist_pd.pkl')
+print 'euclid_dist_pd loaded'
 dropoff_pd          = pd.read_pickle('app/static/dy/mdp_files/dropoff_pd.pkl')
+print 'dropoff_pd loaded'
 prob_pickup_pd      = pd.read_pickle('app/static/dy/mdp_files/prob_pickup_pd.pkl')
+print 'prob_pickup_pd loaded'
 zonetimes_pd        = pd.read_pickle('app/static/dy/mdp_files/zonetimes_pd.pkl')
 zone_times_shift_pd = pd.read_pickle('app/static/dy/mdp_files/zone_times_shift_pd.pkl')
 zone_matrix         = np.load('app/static/dy/mdp_files/zone_matrix_40x40.dat')
+print 'zone stuff loaded'
 print 'Shit loaded!'
 
 #make dictionaries and other things from dataframes
