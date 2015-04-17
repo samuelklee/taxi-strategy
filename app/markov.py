@@ -10,7 +10,7 @@ reward_pd           = pd.read_pickle('app/static/data/mdp_files/reward_pd.pkl')
 print 'reward_pd loaded!'
 dist_pd             = pd.read_pickle('app/static/data/mdp_files/dist_pd.pkl')
 print 'dist_pd loaded!'
-euclid_dist_pd      = pd.read_pickle('app/static/data/mdp_files/euclid_dist_pd.pkl')
+euclid_dist_pd      = pd.read_pickle('app/static/data/mdp_files/euclid_dist_pd_new.pkl')
 print 'euclid_dist_pd loaded!'
 dropoff_pd          = pd.read_pickle('app/static/data/mdp_files/dropoff_pd.pkl')
 print 'dropoff_pd loaded!'
@@ -30,6 +30,7 @@ dropoff_dict        = dropoff_pd.to_dict()
 prob_pickup_dict    = prob_pickup_pd.prob_pickup.to_dict()
 zonetimes_to_zone_dict      = dict(zip(zonetimes_pd.zone_time_renamed, zonetimes_pd.zone))
 zonetimes_to_time_bin_dict  = dict(zip(zonetimes_pd.zone_time_renamed, zonetimes_pd.time_bin))
+zone_grid_to_zone_dict      = dict(zip(np.unique(zone_matrix), range(251)))
 
 num_zones           = 251
 zone_times_shift    = zone_times_shift_pd.ix[:,0].values
@@ -39,11 +40,11 @@ last_zone_time      = zone_times_shift[-1]
 time_bin_minutes    = 10.
 max_waiting_minutes = 2*time_bin_minutes
 shift_end_zone_time = max(zone_times_shift)
-avg_speed_mph       = 15
+avg_speed_mph       = 15.
 shift_beg           = 7
 shift_end           = 19
-shift_beg_time_bin  = shift_beg*60/time_bin_minutes
-shift_end_time_bin  = shift_end*60/time_bin_minutes
+shift_beg_time_bin  = int(shift_beg*60/time_bin_minutes)
+shift_end_time_bin  = int(shift_end*60/time_bin_minutes)
 
 #set gas costs
 miles_per_gallon    = 15.
@@ -88,7 +89,7 @@ def get_causal_zone_times(current_zone_time):
     current_time_bin = zonetimes_to_time_bin_dict[current_zone_time]
     
     min_zone_time = int((current_time_bin + 1)*num_zones)
-    max_zone_time = min(int((current_time_bin + 2 + max_waiting_minutes/time_bin_minutes)*num_zones),
+    max_zone_time = min(int((current_time_bin + 1 + max_waiting_minutes/time_bin_minutes)*num_zones),
                         shift_end_zone_time)
     
     zone_times_within_max_waiting = np.arange(min_zone_time, max_zone_time)
@@ -101,7 +102,7 @@ def get_causal_zone_times(current_zone_time):
                          (time_bins_within_max_waiting - current_time_bin)*time_bin_minutes)
     return causal_zone_times[np.nonzero(causal_zone_times)]
            
-@memoize.memoize(100000)
+@memoize.memoize(500000)
 def EstimateQ(root_width, width, action_width, depth, discount, current_zone_time):
     '''Return Q array containing [policy, expected reward, and expected value] for all policies.
     at current zone time. Width sets number of samples, and action_width sets number of actions 
@@ -149,14 +150,15 @@ def EstimateQ(root_width, width, action_width, depth, discount, current_zone_tim
         policy_counter += 1
     return Q_array
     
-@memoize.memoize(100000)
+@memoize.memoize(500000)
 def EstimateV(root_width, width, action_width, depth, discount, current_zone_time):
     Q_array = EstimateQ(root_width, width, action_width, depth, discount, current_zone_time)
     if len(Q_array) == 0:
         return 0.
     return max(Q_array[:,-1])
 
-def get_prediction(current_zone_time, root_width=16, action_width=16, depth=2, discount=0.99):
+def get_prediction(current_zone_time, root_width=32, action_width=16, depth=1, discount=0.99):
+    print 'Starting prediction for width = ' + str(action_width) + ' and depth = ' + str(depth) +'...'
     EQ = EstimateQ(root_width, root_width, action_width, depth, discount, current_zone_time)
     if EQ == []:
         print 'End of shift, go home!'
@@ -168,12 +170,10 @@ def get_prediction(current_zone_time, root_width=16, action_width=16, depth=2, d
         causal_zone_times = get_causal_zone_times(current_zone_time)
         
         current_zone, current_time_bin = zonetime_to_zone_time_bin(current_zone_time)
+        print 'Start zone: ' + str(current_zone)
         next_zone, next_time_bin = zonetime_to_zone_time_bin(next_zone_time)
         delta_time_bins = next_time_bin - current_time_bin
-#        if make_pickup:
-#            print 'Make pickup! Expected reward = {0:.2f}'.format(expected_reward)
-#        else:
-#            print 'Skip pickup! Go to zonetime {0}. Expected cost = {1: .2f}.'.format(next_zone_time, expected_reward)
+    print 'Prediction done!'
     return make_pickup, next_zone, delta_time_bins, np.around(expected_reward,2), causal_zone_times
             
 def simulate_trip(current_zone_time, policy):
@@ -191,12 +191,12 @@ def simulate_trip(current_zone_time, policy):
         num_no_pickup_samples = sample_next_zone_time(next_zone_time_choices, current_zone_time, policy, 1)
     
     if len(pickup_samples) == 1:
-            return np.array([pickup_samples[0], reward_pickup_samples[0], 1])
+        return np.array([pickup_samples[0], reward_pickup_samples[0], 1])
     if policy[0] == 0:
         return np.array([policy[1], reward_no_pickup, -1]) #-1 = skip pickup
     return np.array([policy[1], reward_no_pickup, 0])
             
-def simulate_shift(starting_zone_time, root_width=16, action_width=16, depth=2, discount=0.99, optimal=True, print_status=False):
+def simulate_shift(starting_zone_time, root_width=32, action_width=16, depth=1, discount=0.99, optimal=True, print_status=False):
     current_zone_time = starting_zone_time
     total_expected_reward = 0.
     pickup_counter = 0
