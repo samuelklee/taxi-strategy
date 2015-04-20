@@ -12,14 +12,6 @@ dist_pd             = pd.read_pickle('app/static/data/mdp_files/dist_pd.pkl')
 print 'dist_pd loaded!'
 euclid_dist_pd      = pd.read_pickle('app/static/data/mdp_files/euclid_dist_pd_new.pkl')
 print 'euclid_dist_pd loaded!'
-
-reward_dict         = reward_pd.to_dict()
-dist_dict           = dist_pd.to_dict()
-euclid_dist_dict    = euclid_dist_pd.to_dict()
-
-del reward_pd, dist_pd, euclid_dist_pd
-
-
 dropoff_pd          = pd.read_pickle('app/static/data/mdp_files/dropoff_pd.pkl')
 print 'dropoff_pd loaded!'
 prob_pickup_pd      = pd.read_pickle('app/static/data/mdp_files/prob_pickup_pd.pkl')
@@ -31,6 +23,9 @@ print 'zone files loaded!'
 print 'Loaded!'
 
 #make dictionaries and other things from dataframes
+reward_dict         = reward_pd.to_dict()
+dist_dict           = dist_pd.to_dict()
+euclid_dist_dict    = euclid_dist_pd.to_dict()
 dropoff_dict        = dropoff_pd.to_dict()
 prob_pickup_dict    = prob_pickup_pd.prob_pickup.to_dict()
 zonetimes_to_zone_dict      = dict(zip(zonetimes_pd.zone_time_renamed, zonetimes_pd.zone))
@@ -41,6 +36,7 @@ num_zones           = 251
 zone_times_shift    = zone_times_shift_pd.ix[:,0].values
 last_zone_time      = zone_times_shift[-1]
 
+del reward_pd, dist_pd, euclid_dist_pd
 del dropoff_pd, prob_pickup_pd, zonetimes_pd, zone_times_shift_pd
 
 #set parameters for cabbie cone
@@ -109,7 +105,7 @@ def get_causal_zone_times(current_zone_time):
                          (time_bins_within_max_waiting - current_time_bin)*time_bin_minutes)
     return causal_zone_times[np.nonzero(causal_zone_times)]
            
-@memoize.memoize(500000)
+@memoize.memoize(200000)
 def EstimateQ(root_width, width, action_width, depth, discount, current_zone_time):
     '''Return Q array containing [policy, expected reward, and expected value] for all policies.
     at current zone time. Width sets number of samples, and action_width sets number of actions 
@@ -157,7 +153,7 @@ def EstimateQ(root_width, width, action_width, depth, discount, current_zone_tim
         policy_counter += 1
     return Q_array
     
-@memoize.memoize(500000)
+@memoize.memoize(200000)
 def EstimateV(root_width, width, action_width, depth, discount, current_zone_time):
     Q_array = EstimateQ(root_width, width, action_width, depth, discount, current_zone_time)
     if len(Q_array) == 0:
