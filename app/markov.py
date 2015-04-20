@@ -84,7 +84,7 @@ def sample_next_zone_time(next_zone_time_choices, current_zone_time, policy, num
     return next_zone_time_pickup_samples, reward_pickup_samples, next_zone_time_no_pickup, reward_no_pickup,\
            num_no_pickup_samples
            
-@memoize.memoize(100000)
+@memoize.memoize(50000)
 def get_causal_zone_times(current_zone_time):
     '''Return all zone_times after current zone time and within max_waiting_minutes 
     that can be reached assuming speed and Euclidean distance.'''
