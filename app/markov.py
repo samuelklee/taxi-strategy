@@ -12,6 +12,14 @@ dist_pd             = pd.read_pickle('app/static/data/mdp_files/dist_pd.pkl')
 print 'dist_pd loaded!'
 euclid_dist_pd      = pd.read_pickle('app/static/data/mdp_files/euclid_dist_pd_new.pkl')
 print 'euclid_dist_pd loaded!'
+
+reward_dict         = reward_pd.to_dict()
+dist_dict           = dist_pd.to_dict()
+euclid_dist_dict    = euclid_dist_pd.to_dict()
+
+del reward_pd, dist_pd, euclid_dist_pd
+
+
 dropoff_pd          = pd.read_pickle('app/static/data/mdp_files/dropoff_pd.pkl')
 print 'dropoff_pd loaded!'
 prob_pickup_pd      = pd.read_pickle('app/static/data/mdp_files/prob_pickup_pd.pkl')
@@ -23,9 +31,6 @@ print 'zone files loaded!'
 print 'Loaded!'
 
 #make dictionaries and other things from dataframes
-reward_dict         = reward_pd.to_dict()
-dist_dict           = dist_pd.to_dict()
-euclid_dist_dict    = euclid_dist_pd.to_dict()
 dropoff_dict        = dropoff_pd.to_dict()
 prob_pickup_dict    = prob_pickup_pd.prob_pickup.to_dict()
 zonetimes_to_zone_dict      = dict(zip(zonetimes_pd.zone_time_renamed, zonetimes_pd.zone))
@@ -36,9 +41,11 @@ num_zones           = 251
 zone_times_shift    = zone_times_shift_pd.ix[:,0].values
 last_zone_time      = zone_times_shift[-1]
 
+del dropoff_pd, prob_pickup_pd, zonetimes_pd, zone_times_shift_pd
+
 #set parameters for cabbie cone
 time_bin_minutes    = 10.
-max_waiting_minutes = 2*time_bin_minutes
+max_waiting_minutes = time_bin_minutes
 shift_end_zone_time = max(zone_times_shift)
 avg_speed_mph       = 15.
 shift_beg           = 7
@@ -98,7 +105,7 @@ def get_causal_zone_times(current_zone_time):
                                                                          zonetimes_to_zone_dict[next_zone_time])]
                                                        for next_zone_time in zone_times_within_max_waiting])
     causal_zone_times = zone_times_within_max_waiting * \
-                        (zone_times_within_max_waiting_euc_dist / avg_speed_mph * 60 <= 
+                        ((1 - 0.5*(current_zone == 0))*zone_times_within_max_waiting_euc_dist / avg_speed_mph * 60 <= 
                          (time_bins_within_max_waiting - current_time_bin)*time_bin_minutes)
     return causal_zone_times[np.nonzero(causal_zone_times)]
            
@@ -158,10 +165,11 @@ def EstimateV(root_width, width, action_width, depth, discount, current_zone_tim
     return max(Q_array[:,-1])
 
 def get_prediction(current_zone_time, root_width=32, action_width=16, depth=1, discount=0.99):
-    print 'Starting prediction for width = ' + str(action_width) + ' and depth = ' + str(depth) +'...'
+#    print 'Starting prediction for width = ' + str(action_width) + ' and depth = ' + str(depth) +'...'
     EQ = EstimateQ(root_width, root_width, action_width, depth, discount, current_zone_time)
     if EQ == []:
-        print 'End of shift, go home!'
+#        print 'End of shift, go home!'
+        return -2, -1, -1, -1, []
     else:
         argmax_a = EQ[np.argmax(EQ[:,-1], axis=0)]
         make_pickup = int(argmax_a[0])
@@ -170,31 +178,31 @@ def get_prediction(current_zone_time, root_width=32, action_width=16, depth=1, d
         causal_zone_times = get_causal_zone_times(current_zone_time)
         
         current_zone, current_time_bin = zonetime_to_zone_time_bin(current_zone_time)
-        print 'Start zone: ' + str(current_zone)
+#        print 'Zone / time bin: ' + str(current_zone) + ' ' + str(current_time_bin)
         next_zone, next_time_bin = zonetime_to_zone_time_bin(next_zone_time)
         delta_time_bins = next_time_bin - current_time_bin
-    print 'Prediction done!'
+#    print 'Prediction done!'
     return make_pickup, next_zone, delta_time_bins, np.around(expected_reward,2), causal_zone_times
             
 def simulate_trip(current_zone_time, policy):
     causal_zone_times = get_causal_zone_times(current_zone_time)
     
     if len(causal_zone_times) == 0:
-        return array([current_time_zone, 0., 0])
+        return -1, 0., 0
     
     if current_zone_time in dropoff_dict.keys():
         next_zone_time_choices = dropoff_dict[current_zone_time]
     else:
-        next_zone_time_choices = [causal_zone_times[0]]
+        next_zone_time_choices = causal_zone_times
     
     pickup_samples, reward_pickup_samples, no_pickup_sample, reward_no_pickup, \
         num_no_pickup_samples = sample_next_zone_time(next_zone_time_choices, current_zone_time, policy, 1)
     
     if len(pickup_samples) == 1:
-        return np.array([pickup_samples[0], reward_pickup_samples[0], 1])
+        return pickup_samples[0], reward_pickup_samples[0], 1
     if policy[0] == 0:
-        return np.array([policy[1], reward_no_pickup, -1]) #-1 = skip pickup
-    return np.array([policy[1], reward_no_pickup, 0])
+        return policy[1], reward_no_pickup, -1 #-1 = skip pickup
+    return policy[1], reward_no_pickup, 0
             
 def simulate_shift(starting_zone_time, root_width=32, action_width=16, depth=1, discount=0.99, optimal=True, print_status=False):
     current_zone_time = starting_zone_time
@@ -215,9 +223,7 @@ def simulate_shift(starting_zone_time, root_width=32, action_width=16, depth=1, 
             best_policy = [1, np.random.choice(causal_zone_times)]
 
         simulated_trip = simulate_trip(current_zone_time, best_policy)
-        current_zone_time = int(simulated_trip[0])
-        expected_reward = simulated_trip[1]
-        made_pickup = int(simulated_trip[2])
+        current_zone_time, expected_reward, made_pickup = simulated_trip
         total_expected_reward += expected_reward
         if made_pickup:
             pickup_counter += 1
