@@ -84,7 +84,7 @@ def sample_next_zone_time(next_zone_time_choices, current_zone_time, policy, num
     return next_zone_time_pickup_samples, reward_pickup_samples, next_zone_time_no_pickup, reward_no_pickup,\
            num_no_pickup_samples
            
-@memoize.memoize(50000)
+@memoize.memoize(20000)
 def get_causal_zone_times(current_zone_time):
     '''Return all zone_times after current zone time and within max_waiting_minutes 
     that can be reached assuming speed and Euclidean distance.'''
@@ -105,7 +105,7 @@ def get_causal_zone_times(current_zone_time):
                          (time_bins_within_max_waiting - current_time_bin)*time_bin_minutes)
     return causal_zone_times[np.nonzero(causal_zone_times)]
            
-@memoize.memoize(200000)
+@memoize.memoize(150000)
 def EstimateQ(root_width, width, action_width, depth, discount, current_zone_time):
     '''Return Q array containing [policy, expected reward, and expected value] for all policies.
     at current zone time. Width sets number of samples, and action_width sets number of actions 
@@ -153,7 +153,7 @@ def EstimateQ(root_width, width, action_width, depth, discount, current_zone_tim
         policy_counter += 1
     return Q_array
     
-@memoize.memoize(200000)
+@memoize.memoize(150000)
 def EstimateV(root_width, width, action_width, depth, discount, current_zone_time):
     Q_array = EstimateQ(root_width, width, action_width, depth, discount, current_zone_time)
     if len(Q_array) == 0:
