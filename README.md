@@ -3,7 +3,7 @@ using the NYC taxi data set to find optimal strategies for drivers
 
 Repo for my Data Incubator capstone project.
 
-Code for the Deep Yellow website (http://deep-yellow.herokuapp.com) can be found in the app folder.
+Code for the Deep Yellow website (http://deep-yellow.herokuapp.com) can be found in the app folder. <b>(The website has been disabled, but you can see a demo of it in the video linked below.)</b>
 
 iPython notebooks for prototyping/wrangling/figures can be found in the ipython folder.
 
